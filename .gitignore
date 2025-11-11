@@ -36,9 +36,11 @@ Thumbs.db
 # Misc
 *.tgz
 *.zip
+bin/
+obj/
 
 # Optional: lock files if using multiple package managers
 # Uncomment only one if you use that package manager consistently
-# package-lock.json
+package-lock.json
 # yarn.lock
 # pnpm-lock.yaml

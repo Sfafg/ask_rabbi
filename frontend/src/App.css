@@ -2,41 +2,59 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+:root{
+    --background1: hsl(0,0%,0%);
+    --background2: hsl(0,0%,10%);
+    --background3: hsl(0,0%,15%);
+    --borderColor: hsl(0,0%,40%);
+    --textColor1:  hsl(0,0%,65%);
+    --textColor2:  hsl(0,0%,100%);
+    --primaryColor: hsl(0,0%,100%);
+    --secondaryColor: hsl(0,0%,100%);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+body{
+    background: var(--background1);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.card1{
+    background: var(--background2);
+    border: 1px solid var(--borderColor);
+    padding: 5px;
+    border-radius:10px;
 }
 
-.card {
-  padding: 2em;
+.card2{
+    background: var(--background3);
+    border: 1px solid var(--borderColor);
+    padding: 5px;
+    border-radius:10px;
 }
 
-.read-the-docs {
-  color: #888;
+h3{
+    font-size: 20px;
+    font-weight: bold; 
+    text-align: left;
+    color: var(--textColor2)
+    /* line-height: 1;  */
+}
+h4{
+    font-size: 16px;
+    font-weight: bold; 
+    text-align: left;
+    color: var(--textColor2)
+}
+h5{
+    font-size: 14px;
+    font-weight: normal; 
+    text-align: left;
+    color: var(--textColor2)
+}
+h6{
+    font-size: 14px;
+    font-weight: normal; 
+    text-align: left;
+    color: var(--textColor1)
 }
