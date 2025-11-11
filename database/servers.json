@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Ask Rabbi",
+      "Group": "Servers",
+      "Host": "db",
+      "Port": 5432,
+      "MaintenanceDB": "ask_rabbi",
+      "Username": "admin",
+      "SSLMode": "prefer"
+    }
+  }
+}
