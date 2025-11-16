@@ -1,6 +1,7 @@
+using backend.Data;
+using backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AskRabbiApi.Models;
 
 namespace AskRabbi.Controllers;
 
@@ -8,9 +9,9 @@ namespace AskRabbi.Controllers;
 [Route("answer")]
 public class AnswersController : ControllerBase
 {
-    private readonly AskRabbiContext _context;
+    private readonly AskRabbiDbContext _context;
 
-    public AnswersController(AskRabbiContext context)
+    public AnswersController(AskRabbiDbContext context)
     {
         _context = context;
     }

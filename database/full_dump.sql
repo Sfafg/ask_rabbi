@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict NhcqxElK2sMfzrXCosB9RBVO6eeMEWBAkPKukXRIyXYkCUOFtSgHfDozz57QdDb
+\restrict gClLf4agr1AbxQNDquHfVq6GoYDPELNPcClnVroiOmZ49xPpJeb51YcgF8Y02y7
 
 -- Dumped from database version 18.0 (Debian 18.0-1.pgdg13+3)
 -- Dumped by pg_dump version 18.0 (Debian 18.0-1.pgdg13+3)
@@ -102,7 +102,8 @@ CREATE TABLE public.users (
     id integer NOT NULL,
     username character varying(50) NOT NULL,
     email character varying(100) NOT NULL,
-    type "char" DEFAULT 'u'::"char" NOT NULL
+    type "char" DEFAULT 'u'::"char" NOT NULL,
+    password character varying(255) NOT NULL
 );
 
 
@@ -173,10 +174,12 @@ COPY public.questions (id, user_id, body) FROM stdin;
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.users (id, username, email, type) FROM stdin;
-0	Hallah	hallah@example.com	r
-1	alice	alice@example.com	u
-2	bob	bob@example.com	u
+COPY public.users (id, username, email, type, password) FROM stdin;
+0	Hallah	hallah@example.com	r	$2a$11$47LZuVOIRu2I9.w1Xo2N.OsLE7n9wJtNmPIHIJCB8sgy2aLpZ4Ieq
+3	Hallah2	example1@gmail.com	u	$2a$11$xU8IZLmqZ2ucV0Vy4SiWKO9ULPitBqq7n6zDy1a/pNUJR7cFS/7MC
+4		example2@gmail.com	u	$2a$11$WmEq3QjpX7iPWcNugecehuSDwa5lXT9P4JQ2Ne/I6npct/4w4eq9a
+5	a	example3@gmail.com	u	$2a$11$QO9dLdiTKb9yUbl7By96..m.AAiUrpNMWz76lQZA1gESHATLgtJJ.
+6	Hallah1	example4@gmail.com	u	$2a$11$CB4986ay0B3q0AgfrTroBu9gsbl2/MF23UGSQeKyiqEcjNU4AHZTe
 \.
 
 
@@ -198,7 +201,7 @@ SELECT pg_catalog.setval('public.questions_id_seq', 0, false);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 0, false);
+SELECT pg_catalog.setval('public.users_id_seq', 6, true);
 
 
 --
@@ -277,5 +280,5 @@ ALTER TABLE ONLY public.answers
 -- PostgreSQL database dump complete
 --
 
-\unrestrict NhcqxElK2sMfzrXCosB9RBVO6eeMEWBAkPKukXRIyXYkCUOFtSgHfDozz57QdDb
+\unrestrict gClLf4agr1AbxQNDquHfVq6GoYDPELNPcClnVroiOmZ49xPpJeb51YcgF8Y02y7
 

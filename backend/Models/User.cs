@@ -1,18 +1,19 @@
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-namespace AskRabbiApi.Models;
 
-[Table("users")]
-public class User
+namespace backend.Models;
+
+public partial class User
 {
-    [Column("id")]
     public int Id { get; set; }
-    [Column("username")]
+
     public string Username { get; set; } = null!;
-    [Column("email")]
+
     public string Email { get; set; } = null!;
-    [Column("type")]
-    public char Type { get; set; } = 'u';
-    public ICollection<Question> Questions { get; set; } = new List<Question>();
-    public ICollectiOn<Answer> Answers { get; set; } = new List<Answer>();
+
+    public char Type { get; set; }
+
+    public string Password { get; set; } = null!;
+
+    public virtual ICollection<Answer> Answers { get; set; } = new List<Answer>();
 }

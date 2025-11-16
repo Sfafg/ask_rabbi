@@ -1,6 +1,11 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using backend.Data;
+using backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AskRabbiApi.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AskRabbi.Controllers;
 
@@ -8,41 +13,71 @@ namespace AskRabbi.Controllers;
 [Route("users")]
 public class UsersController : ControllerBase
 {
-    private readonly AskRabbiContext _context;
+    private readonly AskRabbiDbContext _context;
+    private readonly IConfiguration _config;
 
-    public UsersController(AskRabbiContext context)
+    public UsersController(IConfiguration config, AskRabbiDbContext context)
     {
+        _config = config;
         _context = context;
     }
 
-    // TODO: Remove
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+    [HttpPost("register")]
+    public async Task<ActionResult<IEnumerable<User>>> RegisterUser([FromBody] RegisterBody request)
     {
-        return await _context.users.ToListAsync();
+        if (await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email) != null)
+            return BadRequest(new { message = "There already exists a user with this email." });
+
+        if (await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username) != null)
+            return BadRequest(new { message = "Username already taken." });
+
+        string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+
+        var user = new User
+        {
+            Username = request.Username,
+            Password = passwordHash,
+            Email = request.Email,
+            Type = 'u',
+        };
+
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "User registered successfully" });
     }
 
-    [HttpPut]
-    public async Task<ActionResult<IEnumerable<User>>> RegisterUser()
+    [HttpPost("login")]
+    public async Task<ActionResult<IEnumerable<User>>> LoginUser([FromBody] LoginBody request)
     {
-        return await _context.users.ToListAsync();
-    }
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
+        if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
+            return Unauthorized(new { message = "Invalid credentials" });
 
-    [HttpGet("login")]
-    public async Task<ActionResult<IEnumerable<User>>> LoginUser()
-    {
-        return await _context.users.ToListAsync();
-    }
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes(
+            _config["JwtSettings:SecretKey"]
+                ?? throw new Exception("JWT SecretKey is missing in appsettings.json")
+        );
 
-    // TODO: Remove
-    [HttpGet("{id}")]
-    public async Task<ActionResult<User>> GetUser(int id)
-    {
-        var user = await _context.users.FindAsync(id);
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(
+                new Claim[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Username),
+                }
+            ),
+            Expires = DateTime.UtcNow.AddHours(1),
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(key),
+                SecurityAlgorithms.HmacSha256Signature
+            ),
+        };
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        var jwt = tokenHandler.WriteToken(token);
 
-        if (user == null)
-            return NotFound();
-
-        return user;
+        return Ok(new { token = jwt });
     }
 }
