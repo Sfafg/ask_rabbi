@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict gClLf4agr1AbxQNDquHfVq6GoYDPELNPcClnVroiOmZ49xPpJeb51YcgF8Y02y7
+\restrict XrD6Gbqpt6mTmLcoejUHNJgKqHqNQRlV05WBTB6YMPiF10ugPQna2yQfoB9hHLB
 
 -- Dumped from database version 18.0 (Debian 18.0-1.pgdg13+3)
 -- Dumped by pg_dump version 18.0 (Debian 18.0-1.pgdg13+3)
@@ -157,7 +157,11 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.answers (id, user_id, answer_id, question_id, body) FROM stdin;
-0	0	\N	0	World!
+1	8	\N	2	As tora says it might not be possible.
+2	8	1	\N	As tora says it might not be possible.
+3	8	\N	2	It is very possible
+4	8	3	\N	NOOOOOOOOOOO
+5	8	4	\N	YESSSSSSSSSS
 \.
 
 
@@ -166,7 +170,14 @@ COPY public.answers (id, user_id, answer_id, question_id, body) FROM stdin;
 --
 
 COPY public.questions (id, user_id, body) FROM stdin;
-0	1	Hello?
+1	7	Hello????
+2	7	Hello????
+3	7	Hello????
+4	7	Hello????
+5	7	Hello???asdf?
+6	7	Hello???asdf?
+7	7	Hello???aaa
+8	7	Hello????
 \.
 
 
@@ -177,9 +188,9 @@ COPY public.questions (id, user_id, body) FROM stdin;
 COPY public.users (id, username, email, type, password) FROM stdin;
 0	Hallah	hallah@example.com	r	$2a$11$47LZuVOIRu2I9.w1Xo2N.OsLE7n9wJtNmPIHIJCB8sgy2aLpZ4Ieq
 3	Hallah2	example1@gmail.com	u	$2a$11$xU8IZLmqZ2ucV0Vy4SiWKO9ULPitBqq7n6zDy1a/pNUJR7cFS/7MC
-4		example2@gmail.com	u	$2a$11$WmEq3QjpX7iPWcNugecehuSDwa5lXT9P4JQ2Ne/I6npct/4w4eq9a
-5	a	example3@gmail.com	u	$2a$11$QO9dLdiTKb9yUbl7By96..m.AAiUrpNMWz76lQZA1gESHATLgtJJ.
 6	Hallah1	example4@gmail.com	u	$2a$11$CB4986ay0B3q0AgfrTroBu9gsbl2/MF23UGSQeKyiqEcjNU4AHZTe
+7	Max	examplea@gmail.com	u	$2a$11$7zJL9PbdJW6GIcyOHGhqU.V5OienaDK/EAYhSdqPJ1GzVus1vEu4a
+8	RabbiTheFirst	example823dad@gmail.com	r	$2a$11$thLXMKJrTaTyRrLMntHYheIP7V8SK4Z0YkfAIjy6K07flCy9r6v0S
 \.
 
 
@@ -187,21 +198,21 @@ COPY public.users (id, username, email, type, password) FROM stdin;
 -- Name: answers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.answers_id_seq', 0, false);
+SELECT pg_catalog.setval('public.answers_id_seq', 5, true);
 
 
 --
 -- Name: questions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.questions_id_seq', 0, false);
+SELECT pg_catalog.setval('public.questions_id_seq', 8, true);
 
 
 --
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 6, true);
+SELECT pg_catalog.setval('public.users_id_seq', 8, true);
 
 
 --
@@ -280,5 +291,5 @@ ALTER TABLE ONLY public.answers
 -- PostgreSQL database dump complete
 --
 
-\unrestrict gClLf4agr1AbxQNDquHfVq6GoYDPELNPcClnVroiOmZ49xPpJeb51YcgF8Y02y7
+\unrestrict XrD6Gbqpt6mTmLcoejUHNJgKqHqNQRlV05WBTB6YMPiF10ugPQna2yQfoB9hHLB
 

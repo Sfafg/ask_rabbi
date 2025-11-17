@@ -1,12 +1,15 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using backend.Data;
 using backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AskRabbi.Controllers;
 
 [ApiController]
-[Route("answer")]
+[Route("answers")]
 public class AnswersController : ControllerBase
 {
     private readonly AskRabbiDbContext _context;
@@ -16,33 +19,74 @@ public class AnswersController : ControllerBase
         _context = context;
     }
 
-    // [HttpGet]
-    // public async Task<ActionResult<IEnumerable<User>>> GetAnswers()
-    // {
-    //     return await _context.users.ToListAsync();
-    // }
+    [HttpGet("question/{id}")]
+    public async Task<ActionResult<IEnumerable<Answer>>> GetAnswersByQuestion(int id)
+    {
+        return await _context.Answers.Where(a => a.QuestionId == id).ToListAsync();
+    }
 
-    // [HttpPut]
-    // public async Task<ActionResult<IEnumerable<User>>> RegisterUser()
-    // {
-    //     return await _context.users.ToListAsync();
-    // }
+    [HttpGet("answer/{id}")]
+    public async Task<ActionResult<IEnumerable<Answer>>> GetAnswersByAnswer(int id)
+    {
+        return await _context.Answers.Where(a => a.AnswerId == id).ToListAsync();
+    }
 
-    // [HttpGet("login")]
-    // public async Task<ActionResult<IEnumerable<User>>> LoginUser()
-    // {
-    //     return await _context.users.ToListAsync();
-    // }
+    [Authorize(Roles = "r")]
+    [HttpPost]
+    public async Task<ActionResult<Answer>> AddAnswer([FromBody] AnswerDto request)
+    {
+        var id = HttpContext.User.Identity as ClaimsIdentity;
+        if (id == null)
+            return Unauthorized();
 
-    // // TODO: Remove
-    // [HttpGet("{id}")]
-    // public async Task<ActionResult<User>> GetUser(int id)
-    // {
-    //     var user = await _context.users.FindAsync(id);
+        string? userId_ = id.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-    //     if (user == null)
-    //         return NotFound();
+        if (string.IsNullOrEmpty(userId_))
+            return Unauthorized();
 
-    //     return user;
-    // }
+        if (!int.TryParse(userId_, out int userId))
+            return BadRequest("Invalid user id.");
+
+        var answer = new Answer
+        {
+            UserId = userId,
+            AnswerId = request.AnswerId,
+            QuestionId = request.QuestionId,
+            Body = request.Body,
+        };
+        _context.Answers.Add(answer);
+        await _context.SaveChangesAsync();
+
+        return Ok(answer);
+    }
+
+    [Authorize(Roles = "r")]
+    [HttpPut("{answerId}")]
+    public async Task<ActionResult<Answer>> EditAnswer(int answerId, [FromBody] AnswerDto request)
+    {
+        var id = HttpContext.User.Identity as ClaimsIdentity;
+        if (id == null)
+            return Unauthorized();
+
+        string? userId_ = id.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId_))
+            return Unauthorized();
+
+        if (!int.TryParse(userId_, out int userId))
+            return BadRequest("Invalid user id.");
+
+        var answer = await _context.Answers.FirstOrDefaultAsync(a => a.Id == answerId);
+
+        if (answer == null)
+            return BadRequest("Question does not exist.");
+
+        if (answer.UserId != userId)
+            return Unauthorized();
+
+        answer.Body = request.Body;
+        await _context.SaveChangesAsync();
+
+        return Ok(answer);
+    }
 }

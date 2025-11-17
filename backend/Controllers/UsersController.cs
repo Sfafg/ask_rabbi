@@ -23,7 +23,10 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult<IEnumerable<User>>> RegisterUser([FromBody] RegisterBody request)
+    public async Task<ActionResult<User>> RegisterUser(
+        [FromForm] RegisterDto request,
+        IFormFile? certificate
+    )
     {
         if (await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email) != null)
             return BadRequest(new { message = "There already exists a user with this email." });
@@ -33,22 +36,26 @@ public class UsersController : ControllerBase
 
         string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
+        var type = (certificate == null) ? 'u' : 'r';
+
         var user = new User
         {
             Username = request.Username,
             Password = passwordHash,
             Email = request.Email,
-            Type = 'u',
+            Type = type,
         };
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        return Ok(new { message = "User registered successfully" });
+        return Ok(
+            new { message = "User registered successfully as " + (type == 'u' ? "User" : "Rabbi") }
+        );
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<IEnumerable<User>>> LoginUser([FromBody] LoginBody request)
+    public async Task<ActionResult<User>> LoginUser([FromBody] LoginDto request)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
@@ -67,6 +74,7 @@ public class UsersController : ControllerBase
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.Username),
+                    new Claim(ClaimTypes.Role, user.Type.ToString()),
                 }
             ),
             Expires = DateTime.UtcNow.AddHours(1),
