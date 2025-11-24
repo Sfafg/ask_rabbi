@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict XrD6Gbqpt6mTmLcoejUHNJgKqHqNQRlV05WBTB6YMPiF10ugPQna2yQfoB9hHLB
+\restrict B5tlgi8nSt17uwySxOcRWv87H44szi8gpbxLXTPSpfWydtvDPZUlBzfSBtc9Orl
 
 -- Dumped from database version 18.0 (Debian 18.0-1.pgdg13+3)
 -- Dumped by pg_dump version 18.0 (Debian 18.0-1.pgdg13+3)
@@ -22,6 +22,32 @@ SET row_security = off;
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+--
+-- Name: questions; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.questions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    body character varying(1024) NOT NULL
+);
+
+
+ALTER TABLE public.questions OWNER TO admin;
+
+--
+-- Name: quary_phrase(character varying); Type: FUNCTION; Schema: public; Owner: admin
+--
+
+CREATE FUNCTION public.quary_phrase(phrase character varying) RETURNS SETOF public.questions
+    LANGUAGE sql
+    AS $$SELECT *
+FROM questions
+WHERE questions.body ILIKE '%' || phrase || '%';$$;
+
+
+ALTER FUNCTION public.quary_phrase(phrase character varying) OWNER TO admin;
 
 --
 -- Name: answers; Type: TABLE; Schema: public; Owner: admin
@@ -59,19 +85,6 @@ ALTER SEQUENCE public.answers_id_seq OWNER TO admin;
 
 ALTER SEQUENCE public.answers_id_seq OWNED BY public.answers.id;
 
-
---
--- Name: questions; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public.questions (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    body character varying(1024) NOT NULL
-);
-
-
-ALTER TABLE public.questions OWNER TO admin;
 
 --
 -- Name: questions_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
@@ -158,10 +171,10 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 COPY public.answers (id, user_id, answer_id, question_id, body) FROM stdin;
 1	8	\N	2	As tora says it might not be possible.
-2	8	1	\N	As tora says it might not be possible.
 3	8	\N	2	It is very possible
 4	8	3	\N	NOOOOOOOOOOO
 5	8	4	\N	YESSSSSSSSSS
+2	8	1	\N	"As tora says it might not be possible."Blah Blah Blah
 \.
 
 
@@ -171,13 +184,13 @@ COPY public.answers (id, user_id, answer_id, question_id, body) FROM stdin;
 
 COPY public.questions (id, user_id, body) FROM stdin;
 1	7	Hello????
-2	7	Hello????
 3	7	Hello????
 4	7	Hello????
 5	7	Hello???asdf?
 6	7	Hello???asdf?
 7	7	Hello???aaa
 8	7	Hello????
+2	7	"As tora says it might not be possible."Blah Blah Blah
 \.
 
 
@@ -291,5 +304,5 @@ ALTER TABLE ONLY public.answers
 -- PostgreSQL database dump complete
 --
 
-\unrestrict XrD6Gbqpt6mTmLcoejUHNJgKqHqNQRlV05WBTB6YMPiF10ugPQna2yQfoB9hHLB
+\unrestrict B5tlgi8nSt17uwySxOcRWv87H44szi8gpbxLXTPSpfWydtvDPZUlBzfSBtc9Orl
 

@@ -38,7 +38,7 @@ public class QuestionsController : ControllerBase
     {
         phrase = phrase.ToLower();
         var questions = await _context
-            .Questions.Where(q => q.Body.ToLower().Contains(phrase))
+            .Questions.FromSql($"SELECT * FROM quary_phrase({phrase})")
             .ToListAsync();
         return Ok(questions);
     }
