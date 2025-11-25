@@ -8,6 +8,7 @@ async function login(username: string, password: string) {
         body: JSON.stringify({username,password})
     });
 
+
     const data = await response.json();
 
 	if (!response.ok)
@@ -37,7 +38,12 @@ function Login() {
             else setError("No token received from the server");
 
 		} catch(err:any){
-            setError(`${Object.values(err.errors).join(", ")}`);
+              if (err.errors) {
+                setError(Object.values(err.errors).join("\n"));
+              } else {
+                setError("Network error: Unable to reach the server");
+                console.error(err);
+              }
         } 
 	}
 
