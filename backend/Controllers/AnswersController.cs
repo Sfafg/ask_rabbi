@@ -45,7 +45,7 @@ public class AnswersController : ControllerBase
             return Unauthorized();
 
         if (!int.TryParse(userId_, out int userId))
-            return BadRequest("Invalid user id.");
+            return BadRequest(new { errors = new { user_id = "Invalid user id" } });
 
         var answer = new Answer
         {
@@ -74,12 +74,12 @@ public class AnswersController : ControllerBase
             return Unauthorized();
 
         if (!int.TryParse(userId_, out int userId))
-            return BadRequest("Invalid user id.");
+            return BadRequest(new { errors = new { user_id = "Invalid user id" } });
 
         var answer = await _context.Answers.FirstOrDefaultAsync(a => a.Id == answerId);
 
         if (answer == null)
-            return BadRequest("Question does not exist.");
+            return BadRequest(new { errors = new { question = "Answer does not exist" } });
 
         if (answer.UserId != userId)
             return Unauthorized();

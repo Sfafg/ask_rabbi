@@ -29,10 +29,12 @@ public class UsersController : ControllerBase
     )
     {
         if (await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email) != null)
-            return BadRequest(new { message = "There already exists a user with this email." });
+            return BadRequest(
+                new { errors = new { email = "There already exists a user with this email." } }
+            );
 
         if (await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username) != null)
-            return BadRequest(new { message = "Username already taken." });
+            return BadRequest(new { errors = new { username = "Username already taken." } });
 
         string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
@@ -59,7 +61,7 @@ public class UsersController : ControllerBase
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
-            return Unauthorized(new { message = "Invalid credentials" });
+            return Unauthorized(new { errors = new { credentials = "Invalid credentials" } });
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(

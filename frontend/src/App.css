@@ -1,60 +1,11 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.App {
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
-:root{
-    --background1: hsl(0,0%,0%);
-    --background2: hsl(0,0%,10%);
-    --background3: hsl(0,0%,15%);
-    --borderColor: hsl(0,0%,40%);
-    --textColor1:  hsl(0,0%,65%);
-    --textColor2:  hsl(0,0%,100%);
-    --primaryColor: hsl(0,0%,100%);
-    --secondaryColor: hsl(0,0%,100%);
-}
-
-body{
-    background: var(--background1);
-}
-
-.card1{
-    background: var(--background2);
-    border: 1px solid var(--borderColor);
-    padding: 5px;
-    border-radius:10px;
-}
-
-.card2{
-    background: var(--background3);
-    border: 1px solid var(--borderColor);
-    padding: 5px;
-    border-radius:10px;
-}
-
-h3{
-    font-size: 20px;
-    font-weight: bold; 
-    text-align: left;
-    color: var(--textColor2)
-    /* line-height: 1;  */
-}
-h4{
-    font-size: 16px;
-    font-weight: bold; 
-    text-align: left;
-    color: var(--textColor2)
-}
-h5{
-    font-size: 14px;
-    font-weight: normal; 
-    text-align: left;
-    color: var(--textColor2)
-}
-h6{
-    font-size: 14px;
-    font-weight: normal; 
-    text-align: left;
-    color: var(--textColor1)
+.App-header {
+	font-size: calc(10px + 2vmin);
+	margin:10px 0px 30px 0px;
 }
