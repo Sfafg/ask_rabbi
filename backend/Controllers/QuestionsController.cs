@@ -20,16 +20,42 @@ public class QuestionsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Question>>> GetQuestions(
+    public async Task<ActionResult<IEnumerable<QuestionResponseDto>>> GetQuestions(
         [FromQuery] int offset = -1,
         int limit = -1
     )
     {
-        IEnumerable<Question> questions;
+        IEnumerable<QuestionResponseDto> questions;
         if (offset == -1 || limit == -1)
-            questions = await _context.Questions.ToListAsync();
+            questions = await _context
+                .Questions.Select(q => new QuestionResponseDto
+                {
+                    Body = q.Body,
+                    User = new UserDto
+                    {
+                        Username = q.User.Username,
+                        Email = q.User.Email,
+                        Type = q.User.Type,
+                    },
+                    Answers = q.Answers,
+                })
+                .ToListAsync();
         else
-            questions = await _context.Questions.Skip(offset).Take(limit).ToListAsync();
+            questions = await _context
+                .Questions.Skip(offset)
+                .Take(limit)
+                .Select(q => new QuestionResponseDto
+                {
+                    Body = q.Body,
+                    User = new UserDto
+                    {
+                        Username = q.User.Username,
+                        Email = q.User.Email,
+                        Type = q.User.Type,
+                    },
+                    Answers = q.Answers,
+                })
+                .ToListAsync();
         return Ok(questions);
     }
 
