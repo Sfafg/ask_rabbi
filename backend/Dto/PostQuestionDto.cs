@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace backend.Models;
 
-public class QuestionDto
+public class PostQuestionDto
 {
     [Required(ErrorMessage = "Body is required")]
     [StringLength(

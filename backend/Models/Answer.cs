@@ -15,9 +15,9 @@ public partial class Answer
 
     public string Body { get; set; } = null!;
 
-    public virtual Answer? AnswerNavigation { get; set; }
+    public virtual Answer? ParentAnswer { get; set; }
 
-    public virtual Answer? InverseAnswerNavigation { get; set; }
+    public virtual ICollection<Answer>? Answers { get; set; }
 
     public virtual Question? Question { get; set; }
 

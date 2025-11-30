@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AutoMapper;
 using backend.Data;
 using backend.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,13 @@ public class UsersController : ControllerBase
 {
     private readonly AskRabbiDbContext _context;
     private readonly IConfiguration _config;
+    private readonly IMapper _mapper;
 
-    public UsersController(IConfiguration config, AskRabbiDbContext context)
+    public UsersController(IConfiguration config, AskRabbiDbContext context, IMapper mapper)
     {
         _config = config;
         _context = context;
+        _mapper = mapper;
     }
 
     [HttpPost("register")]
@@ -40,14 +43,8 @@ public class UsersController : ControllerBase
 
         var type = (certificate == null) ? 'u' : 'r';
 
-        var user = new User
-        {
-            Username = request.Username,
-            Password = passwordHash,
-            Email = request.Email,
-            Type = type,
-        };
-
+        var user = _mapper.Map<User>(request);
+        user.Type = type;
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 

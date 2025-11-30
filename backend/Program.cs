@@ -1,4 +1,5 @@
 using System.Text;
+using AutoMapper;
 using backend.Data;
 using backend.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -45,6 +46,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AskRabbiDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 

@@ -35,9 +35,9 @@ public partial class AskRabbiDbContext : DbContext
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity
-                .HasOne(d => d.AnswerNavigation)
-                .WithOne(p => p.InverseAnswerNavigation)
-                .HasForeignKey<Answer>(d => d.AnswerId)
+                .HasOne(d => d.ParentAnswer)
+                .WithMany(p => p.Answers)
+                .HasForeignKey(d => d.AnswerId)
                 .HasConstraintName("answerid");
 
             entity

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace backend.Models;
 
-public class AnswerDto
+public class PostAnswerDto
 {
     public int? AnswerId { get; set; }
     public int? QuestionId { get; set; }

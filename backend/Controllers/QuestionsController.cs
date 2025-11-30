@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using AutoMapper;
 using backend.Data;
 using backend.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -13,50 +14,30 @@ namespace AskRabbi.Controllers;
 public class QuestionsController : ControllerBase
 {
     private readonly AskRabbiDbContext _context;
+    private readonly IMapper _mapper;
 
-    public QuestionsController(AskRabbiDbContext context)
+    public QuestionsController(AskRabbiDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<QuestionResponseDto>>> GetQuestions(
-        [FromQuery] int offset = -1,
-        int limit = -1
+    public async Task<ActionResult<IEnumerable<QuestionDto>>> GetQuestions(
+        [FromQuery] int offset = 0,
+        int limit = 2147483647
     )
     {
-        IEnumerable<QuestionResponseDto> questions;
-        if (offset == -1 || limit == -1)
-            questions = await _context
-                .Questions.Select(q => new QuestionResponseDto
-                {
-                    Body = q.Body,
-                    User = new UserDto
-                    {
-                        Username = q.User.Username,
-                        Email = q.User.Email,
-                        Type = q.User.Type,
-                    },
-                    Answers = q.Answers,
-                })
-                .ToListAsync();
-        else
-            questions = await _context
-                .Questions.Skip(offset)
-                .Take(limit)
-                .Select(q => new QuestionResponseDto
-                {
-                    Body = q.Body,
-                    User = new UserDto
-                    {
-                        Username = q.User.Username,
-                        Email = q.User.Email,
-                        Type = q.User.Type,
-                    },
-                    Answers = q.Answers,
-                })
-                .ToListAsync();
-        return Ok(questions);
+        var questions = await _context
+            .Questions.Skip(offset)
+            .Take(limit)
+            .Include(q => q.User)
+            .Include(q => q.Answers)
+                .ThenInclude(a => a.User)
+            .Include(q => q.Answers)
+                .ThenInclude(a => a.Answers)
+            .ToListAsync();
+        return Ok(_mapper.Map<List<QuestionDto>>(questions));
     }
 
     [HttpGet("query")]
@@ -65,24 +46,36 @@ public class QuestionsController : ControllerBase
         phrase = phrase.ToLower();
         var questions = await _context
             .Questions.FromSql($"SELECT * FROM quary_phrase({phrase})")
+            .Include(q => q.User)
+            .Include(q => q.Answers)
+                .ThenInclude(a => a.User)
+            .Include(q => q.Answers)
+                .ThenInclude(a => a.Answers)
             .ToListAsync();
-        return Ok(questions);
+        return Ok(_mapper.Map<List<QuestionDto>>(questions));
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Question>> GetQuestion(int id)
     {
-        var question = await _context.Questions.FindAsync(id);
+        var question = await _context
+            .Questions.Where(q => q.Id == id)
+            .Include(q => q.User)
+            .Include(q => q.Answers)
+                .ThenInclude(a => a.User)
+            .Include(q => q.Answers)
+                .ThenInclude(a => a.Answers)
+            .FirstOrDefaultAsync();
 
         if (question == null)
             return NotFound();
 
-        return Ok(question);
+        return Ok(_mapper.Map<QuestionDto>(question));
     }
 
     [Authorize(Roles = "u,r")]
     [HttpPost]
-    public async Task<ActionResult<Question>> AddQuestion([FromBody] QuestionDto request)
+    public async Task<ActionResult<Question>> AddQuestion([FromBody] PostQuestionDto request)
     {
         var id = HttpContext.User.Identity as ClaimsIdentity;
         if (id == null)
@@ -96,7 +89,8 @@ public class QuestionsController : ControllerBase
         if (!int.TryParse(userId_, out int userId))
             return BadRequest(new { errors = new { user_id = "Invalid user id" } });
 
-        var question = new Question { UserId = userId, Body = request.Body };
+        var question = _mapper.Map<Question>(request);
+        question.UserId = userId;
         _context.Questions.Add(question);
         await _context.SaveChangesAsync();
 
@@ -107,7 +101,7 @@ public class QuestionsController : ControllerBase
     [HttpPut("{questionId}")]
     public async Task<ActionResult<Question>> UpdateQuestion(
         int questionId,
-        [FromBody] QuestionDto request
+        [FromBody] PostQuestionDto request
     )
     {
         var id = HttpContext.User.Identity as ClaimsIdentity;

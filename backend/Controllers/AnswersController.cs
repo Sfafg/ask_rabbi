@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using AutoMapper;
 using backend.Data;
 using backend.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -13,10 +14,12 @@ namespace AskRabbi.Controllers;
 public class AnswersController : ControllerBase
 {
     private readonly AskRabbiDbContext _context;
+    private readonly IMapper _mapper;
 
-    public AnswersController(AskRabbiDbContext context)
+    public AnswersController(AskRabbiDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     [HttpGet("question/{id}")]
@@ -33,7 +36,7 @@ public class AnswersController : ControllerBase
 
     [Authorize(Roles = "r")]
     [HttpPost]
-    public async Task<ActionResult<Answer>> AddAnswer([FromBody] AnswerDto request)
+    public async Task<ActionResult<Answer>> AddAnswer([FromBody] PostAnswerDto request)
     {
         var id = HttpContext.User.Identity as ClaimsIdentity;
         if (id == null)
@@ -47,13 +50,8 @@ public class AnswersController : ControllerBase
         if (!int.TryParse(userId_, out int userId))
             return BadRequest(new { errors = new { user_id = "Invalid user id" } });
 
-        var answer = new Answer
-        {
-            UserId = userId,
-            AnswerId = request.AnswerId,
-            QuestionId = request.QuestionId,
-            Body = request.Body,
-        };
+        var answer = _mapper.Map<Answer>(request);
+        answer.UserId = userId;
         _context.Answers.Add(answer);
         await _context.SaveChangesAsync();
 
@@ -62,7 +60,10 @@ public class AnswersController : ControllerBase
 
     [Authorize(Roles = "r")]
     [HttpPut("{answerId}")]
-    public async Task<ActionResult<Answer>> EditAnswer(int answerId, [FromBody] AnswerDto request)
+    public async Task<ActionResult<Answer>> EditAnswer(
+        int answerId,
+        [FromBody] PostAnswerDto request
+    )
     {
         var id = HttpContext.User.Identity as ClaimsIdentity;
         if (id == null)
