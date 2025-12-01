@@ -23,15 +23,35 @@ public class AnswersController : ControllerBase
     }
 
     [HttpGet("question/{id}")]
-    public async Task<ActionResult<IEnumerable<Answer>>> GetAnswersByQuestion(int id)
+    public async Task<ActionResult<IEnumerable<Answer>>> GetAnswersByQuestion(
+        int id,
+        [FromQuery] int offset = 0,
+        int limit = 2147483647
+    )
     {
-        return await _context.Answers.Where(a => a.QuestionId == id).ToListAsync();
+        var answers = await _context
+            .Answers.Where(a => a.QuestionId == id)
+            .Skip(offset)
+            .Take(limit)
+            .Include(a => a.User)
+            .ToListAsync();
+        return Ok(_mapper.Map<List<AnswerDto>>(answers));
     }
 
     [HttpGet("answer/{id}")]
-    public async Task<ActionResult<IEnumerable<Answer>>> GetAnswersByAnswer(int id)
+    public async Task<ActionResult<IEnumerable<Answer>>> GetAnswersByAnswer(
+        int id,
+        [FromQuery] int offset = 0,
+        int limit = 2147483647
+    )
     {
-        return await _context.Answers.Where(a => a.AnswerId == id).ToListAsync();
+        var answers = await _context
+            .Answers.Where(a => a.AnswerId == id)
+            .Skip(offset)
+            .Take(limit)
+            .Include(a => a.User)
+            .ToListAsync();
+        return Ok(_mapper.Map<List<AnswerDto>>(answers));
     }
 
     [Authorize(Roles = "r")]

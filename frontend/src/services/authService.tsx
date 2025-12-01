@@ -1,13 +1,20 @@
 import { Api, ValidationError } from "./api";
+import { jwtDecode } from "jwt-decode";
 
 const api = new Api();
 
-export function login(username: string, password: string) {
+interface Token {
+	token: string;
+}
+
+export var jwt: Token | null = null;
+
+export async function login(username: string, password: string) {
 	if (username.length < 3 || username.length > 50 || password.length < 6) {
 		throw new ValidationError("Invalid credentials");
 	}
 
-	return api.post<string>(
+	jwt = await api.post<Token>(
 		"/users/login",
 		{ "Content-Type": "application/json" },
 		JSON.stringify({ username, password }),
@@ -43,4 +50,16 @@ export function register(
 	if (certificate) form.append("certificate", certificate);
 
 	return api.post("/users/register", {}, form);
+}
+
+interface Claims {
+	id: number;
+	name: string;
+	role: string;
+}
+
+export function getRole() {
+	if (!jwt) return "n";
+	const claims = jwtDecode<Claims>(jwt.token);
+	return claims.role;
 }

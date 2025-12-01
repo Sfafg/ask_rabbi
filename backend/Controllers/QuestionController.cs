@@ -32,25 +32,23 @@ public class QuestionsController : ControllerBase
             .Questions.Skip(offset)
             .Take(limit)
             .Include(q => q.User)
-            .Include(q => q.Answers)
-                .ThenInclude(a => a.User)
-            .Include(q => q.Answers)
-                .ThenInclude(a => a.Answers)
             .ToListAsync();
         return Ok(_mapper.Map<List<QuestionDto>>(questions));
     }
 
     [HttpGet("query")]
-    public async Task<ActionResult<IEnumerable<Question>>> GetQuestions([FromQuery] string phrase)
+    public async Task<ActionResult<IEnumerable<Question>>> GetQuestions(
+        [FromQuery] string phrase,
+        int offset = 0,
+        int limit = 2147483647
+    )
     {
         phrase = phrase.ToLower();
         var questions = await _context
             .Questions.FromSql($"SELECT * FROM quary_phrase({phrase})")
+            .Skip(offset)
+            .Take(limit)
             .Include(q => q.User)
-            .Include(q => q.Answers)
-                .ThenInclude(a => a.User)
-            .Include(q => q.Answers)
-                .ThenInclude(a => a.Answers)
             .ToListAsync();
         return Ok(_mapper.Map<List<QuestionDto>>(questions));
     }
@@ -61,10 +59,6 @@ public class QuestionsController : ControllerBase
         var question = await _context
             .Questions.Where(q => q.Id == id)
             .Include(q => q.User)
-            .Include(q => q.Answers)
-                .ThenInclude(a => a.User)
-            .Include(q => q.Answers)
-                .ThenInclude(a => a.Answers)
             .FirstOrDefaultAsync();
 
         if (question == null)

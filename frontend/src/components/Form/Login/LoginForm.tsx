@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { TextInput } from "../../Input";
 import { SubmitButton } from "../../Buttons/";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../../services/authService";
+import {  login } from "../../../services/authService";
 
 const LoginForm: React.FC = () => {
 	const [username, setUsername] = useState("");
@@ -14,9 +14,9 @@ const LoginForm: React.FC = () => {
 		e.preventDefault();
 
 		try {
-			const jwt = await login(username, password);
+			await login(username, password);
+
 			navigate("/");
-			localStorage.setItem("token", jwt);
 		} catch (err: any) {
 			setError(err.message);
 		}

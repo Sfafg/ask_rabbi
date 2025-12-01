@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { getAnswersToQuestion, Answer } from "../../../services/answerService";
-import { getRole } from "../../../services/authService";
-import { AnswerCard } from "../";
 
-interface QuestionCardProps {
+import { getAnswersToQuestion, Answer } from "../../../services/answerService";
+
+interface AnswerCardProps {
 	id: number;
 	body: string;
 	footer?: string;
 }
 
-const QuestionCard: React.FC<QuestionCardProps> = ({ id, body, footer }) => {
+const AnswerCard: React.FC<AnswerCardProps> = ({ id, body, footer }) => {
 	const [showAnswer, setShowAnswer] = useState(false);
-	const [showAnswerForm, setShowAnswerForm] = useState(false);
 	const [answers, setAnswers] = useState<Array<Answer>>();
 
 	useEffect(() => {
@@ -22,7 +20,6 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ id, body, footer }) => {
 	}, [id]);
 
 	const toggleAnswer = () => setShowAnswer((prev) => !prev);
-
 	return (
 		<div
 			style={{
@@ -38,9 +35,6 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ id, body, footer }) => {
 			{answers?.length !== 0 && (
 				<button onClick={toggleAnswer}>toggle answers</button>
 			)}
-			{getRole() === "r" && (
-				<button onClick={() => setShowAnswerForm(true)}>answer</button>
-			)}
 
 			{showAnswer &&
 				answers?.map((a) => (
@@ -55,4 +49,4 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ id, body, footer }) => {
 		</div>
 	);
 };
-export default QuestionCard;
+export default AnswerCard;

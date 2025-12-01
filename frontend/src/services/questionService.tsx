@@ -3,20 +3,15 @@ import { Api } from "./api";
 const api = new Api();
 
 export interface User {
+	id: number;
 	username: string;
 	email: string;
 }
 
-export interface Answer {
-	body: string;
-	user: User;
-	answers: Answer[];
-}
-
 export interface Question {
+	id: number;
 	user: User;
 	body: string;
-	answers: Answer[];
 }
 
 export function getQuestions() {
