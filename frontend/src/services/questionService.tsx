@@ -2,11 +2,21 @@ import { Api } from "./api";
 
 const api = new Api();
 
-export interface Question {
-	id: number;
-	userId: number;
+export interface User {
+	username: string;
+	email: string;
+}
+
+export interface Answer {
 	body: string;
-	answers: any[];
+	user: User;
+	answers: Answer[];
+}
+
+export interface Question {
+	user: User;
+	body: string;
+	answers: Answer[];
 }
 
 export function getQuestions() {
