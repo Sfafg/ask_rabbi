@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { TextInput } from "../../Input";
 import { SubmitButton } from "../../Buttons/";
 import { useNavigate } from "react-router-dom";
-import {  login } from "../../../services/authService";
+import { login, getId } from "../../../services/authService";
 
 const LoginForm: React.FC = () => {
 	const [username, setUsername] = useState("");

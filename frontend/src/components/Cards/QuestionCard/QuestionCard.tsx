@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getAnswersToQuestion, Answer } from "../../../services/answerService";
 import { getRole } from "../../../services/authService";
 import { AnswerCard } from "../";
+import { AnswerForm } from "../../Form/";
 
 interface QuestionCardProps {
 	id: number;
@@ -14,14 +15,12 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ id, body, footer }) => {
 	const [showAnswerForm, setShowAnswerForm] = useState(false);
 	const [answers, setAnswers] = useState<Array<Answer>>();
 
+	async function loadAnswers() {
+		setAnswers(await getAnswersToQuestion(id));
+	}
 	useEffect(() => {
-		async function load() {
-			setAnswers(await getAnswersToQuestion(id));
-		}
-		load();
+		loadAnswers();
 	}, [id]);
-
-	const toggleAnswer = () => setShowAnswer((prev) => !prev);
 
 	return (
 		<div
@@ -35,18 +34,36 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ id, body, footer }) => {
 		>
 			<p>{body}</p>
 			{footer && <small style={{ color: "#666" }}>{footer}</small>}
-			{answers?.length !== 0 && (
-				<button onClick={toggleAnswer}>toggle answers</button>
-			)}
-			{getRole() === "r" && (
-				<button onClick={() => setShowAnswerForm(true)}>answer</button>
-			)}
+			<div>
+				{answers?.length !== 0 && (
+					<button onClick={() => setShowAnswer((prev) => !prev)}>
+						toggle answers
+					</button>
+				)}
+				{getRole() === "r" && (
+					<button onClick={() => setShowAnswerForm((prev) => !prev)}>
+						answer
+					</button>
+				)}
+			</div>
 
+			{showAnswerForm && (
+				<>
+					<AnswerForm
+						questionId={id}
+						afterSubmit={() => {
+							setShowAnswerForm(false);
+							loadAnswers();
+						}}
+					/>
+				</>
+			)}
 			{showAnswer &&
 				answers?.map((a) => (
 					<>
 						<AnswerCard
 							id={a.id}
+							userId={a.user.id}
 							body={a.body}
 							footer={`Answered by ${a.user.username} (${a.user.email})`}
 						/>

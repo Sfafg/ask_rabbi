@@ -33,6 +33,7 @@ public class QuestionsController : ControllerBase
             .Take(limit)
             .Include(q => q.User)
             .ToListAsync();
+
         return Ok(_mapper.Map<List<QuestionDto>>(questions));
     }
 

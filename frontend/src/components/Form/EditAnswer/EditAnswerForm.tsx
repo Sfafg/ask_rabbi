@@ -1,19 +1,14 @@
 import React, { useState } from "react";
 import { TextInput } from "../../Input";
 import { SubmitButton } from "../../Buttons";
-import {
-	postAnswerToAnswer,
-	postAnswerToQuestion,
-} from "../../../services/answerService";
+import { updateAnswer } from "../../../services/answerService";
 
-interface AnswerFormProps {
-	questionId?: number;
-	answerId?: number;
-	afterSubmit?: () => void;
+interface EditAnswerFormProps {
+	answerId: number;
+	afterSubmit?: (value: string) => void;
 }
-const AnswerForm: React.FC<AnswerFormProps> = ({
-	questionId = null,
-	answerId = null,
+const AnswerForm: React.FC<EditAnswerFormProps> = ({
+	answerId,
 	afterSubmit = null,
 }) => {
 	const [body, setBody] = useState("");
@@ -23,9 +18,8 @@ const AnswerForm: React.FC<AnswerFormProps> = ({
 		e.preventDefault();
 
 		try {
-			if (answerId) await postAnswerToAnswer(answerId, body);
-			if (questionId) await postAnswerToQuestion(questionId, body);
-			if (afterSubmit) afterSubmit();
+			await updateAnswer(answerId, body);
+			if (afterSubmit) afterSubmit(body);
 		} catch (err: any) {
 			setError(err.message);
 		}
@@ -35,7 +29,7 @@ const AnswerForm: React.FC<AnswerFormProps> = ({
 		<>
 			<form onSubmit={onSubmit}>
 				<TextInput label="" type="text" value={body} onChange={setBody} />
-				<SubmitButton label="Post answer" />
+				<SubmitButton label="Update answer" />
 			</form>
 			{error && <p>{error}</p>}
 		</>

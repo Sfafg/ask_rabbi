@@ -53,8 +53,7 @@ export function register(
 }
 
 interface Claims {
-	id: number;
-	name: string;
+	nameid: string;
 	role: string;
 }
 
@@ -62,4 +61,10 @@ export function getRole() {
 	if (!jwt) return "n";
 	const claims = jwtDecode<Claims>(jwt.token);
 	return claims.role;
+}
+
+export function getId() {
+	if (!jwt) return -1;
+	const claims = jwtDecode<Claims>(jwt.token);
+	return claims.nameid;
 }
