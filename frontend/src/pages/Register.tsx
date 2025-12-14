@@ -1,11 +1,14 @@
 import { RegisterForm } from "../components/Form/";
 
-function Register() {
+interface RegisterProps {
+	setRole: (value: string) => void;
+}
+
+function Register({ setRole }: RegisterProps) {
 	return (
-		<div className="App">
-			<header className="App-header">Register Screen</header>
-			<RegisterForm />
-		</div>
+		<>
+			<RegisterForm setRole={setRole} />
+		</>
 	);
 }
 

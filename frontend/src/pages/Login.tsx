@@ -1,12 +1,15 @@
 import React from "react";
 import { LoginForm } from "../components/Form/";
 
-function Login() {
+interface LoginProps {
+	setRole: (value: string) => void;
+}
+
+function Login({ setRole }: LoginProps) {
 	return (
-		<div className="App">
-			<header className="App-header">Login Screen</header>
-			<LoginForm />
-		</div>
+		<>
+			<LoginForm setRole={setRole} />
+		</>
 	);
 }
 

@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { TextInput, BoolInput, FileInput } from "../../Input";
 import { SubmitButton } from "../../Buttons/";
-import { register } from "../../../services/authService";
+import { getRole, register } from "../../../services/authService";
 import { useNavigate } from "react-router-dom";
 
-const RegisterForm: React.FC = () => {
+interface RegisterProps {
+	setRole: (value: string) => void;
+}
+
+const RegisterForm: React.FC<RegisterProps> = ({ setRole }) => {
 	const [email, setEmail] = useState("");
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
@@ -18,6 +22,7 @@ const RegisterForm: React.FC = () => {
 
 		try {
 			await register(email, username, password, isRabbi, certificate);
+			setRole(getRole());
 			navigate("/");
 		} catch (err: any) {
 			setError(err.message);

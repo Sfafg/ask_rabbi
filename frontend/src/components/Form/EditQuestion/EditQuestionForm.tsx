@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { TextInput } from "../../Input";
 import { SubmitButton } from "../../Buttons";
-import { updateAnswer } from "../../../services/answerService";
+import { updateQuestion } from "../../../services/questionService";
 
-interface EditAnswerFormProps {
-	answerId: number;
+interface EditQuestionFormProps {
+	id: number;
 	afterSubmit?: (value: string) => void;
 }
-const EditAnswerForm: React.FC<EditAnswerFormProps> = ({
-	answerId,
+const EditQuestionForm: React.FC<EditQuestionFormProps> = ({
+	id,
 	afterSubmit = null,
 }) => {
 	const [body, setBody] = useState("");
@@ -18,8 +18,9 @@ const EditAnswerForm: React.FC<EditAnswerFormProps> = ({
 		e.preventDefault();
 
 		try {
-			await updateAnswer(answerId, body);
+			await updateQuestion(id, body);
 			if (afterSubmit) afterSubmit(body);
+			setBody("");
 		} catch (err: any) {
 			setError(err.message);
 		}
@@ -29,11 +30,11 @@ const EditAnswerForm: React.FC<EditAnswerFormProps> = ({
 		<>
 			<form onSubmit={onSubmit}>
 				<TextInput label="" type="text" value={body} onChange={setBody} />
-				<SubmitButton label="Update answer" />
+				<SubmitButton label="Update question" />
 			</form>
 			{error && <p>{error}</p>}
 		</>
 	);
 };
 
-export default EditAnswerForm;
+export default EditQuestionForm;

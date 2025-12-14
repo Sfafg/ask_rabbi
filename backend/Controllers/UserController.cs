@@ -45,6 +45,7 @@ public class UsersController : ControllerBase
 
         var user = _mapper.Map<User>(request);
         user.Type = type;
+        user.Password = passwordHash;
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 

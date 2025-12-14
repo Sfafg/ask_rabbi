@@ -15,7 +15,7 @@ const TextInput: React.FC<TextInputProps> = ({
 }) => {
 	return (
 		<div>
-			{label.length != 0 && <label>{label} </label>}
+			{label.length !== 0 && <label>{label} </label>}
 			<input
 				type={type}
 				value={value}

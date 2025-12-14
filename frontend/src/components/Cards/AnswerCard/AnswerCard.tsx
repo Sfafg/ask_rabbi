@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { getRole, getId } from "../../../services/authService";
-import {
-	getAnswersToQuestion,
-	getAnswersToAnswer,
-	Answer,
-} from "../../../services/answerService";
+import { getAnswersToAnswer, Answer } from "../../../services/answerService";
 import { AnswerForm, EditAnswerForm } from "../../Form/";
 
 interface AnswerCardProps {
@@ -90,14 +86,14 @@ const AnswerCard: React.FC<AnswerCardProps> = ({
 			)}
 			{showAnswer &&
 				answers?.map((a) => (
-					<>
+					<React.Fragment key={a.id}>
 						<AnswerCard
 							id={a.id}
 							userId={a.user.id}
 							body={a.body}
 							footer={`Answered by ${a.user.username} (${a.user.email})`}
 						/>
-					</>
+					</React.Fragment>
 				))}
 		</div>
 	);

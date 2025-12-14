@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import { TextInput } from "../../Input";
 import { SubmitButton } from "../../Buttons/";
 import { useNavigate } from "react-router-dom";
-import { login, getId } from "../../../services/authService";
+import { login, getRole } from "../../../services/authService";
 
-const LoginForm: React.FC = () => {
+interface LoginProps {
+	setRole: (value: string) => void;
+}
+
+const LoginForm: React.FC<LoginProps> = ({ setRole }) => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
@@ -15,6 +19,7 @@ const LoginForm: React.FC = () => {
 
 		try {
 			await login(username, password);
+			setRole(getRole());
 
 			navigate("/");
 		} catch (err: any) {

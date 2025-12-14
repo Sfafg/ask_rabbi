@@ -1,19 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { getAnswersToQuestion, Answer } from "../../../services/answerService";
-import { getRole } from "../../../services/authService";
+import { getRole, getId } from "../../../services/authService";
 import { AnswerCard } from "../";
-import { AnswerForm } from "../../Form/";
+import { AnswerForm, EditQuestionForm } from "../../Form/";
 
 interface QuestionCardProps {
 	id: number;
+	userId: number;
 	body: string;
 	footer?: string;
 }
 
-const QuestionCard: React.FC<QuestionCardProps> = ({ id, body, footer }) => {
+const QuestionCard: React.FC<QuestionCardProps> = ({
+	id,
+	userId,
+	body,
+	footer,
+}) => {
 	const [showAnswer, setShowAnswer] = useState(false);
 	const [showAnswerForm, setShowAnswerForm] = useState(false);
+	const [showEditQuestionForm, setShowEditQuestionForm] = useState(false);
 	const [answers, setAnswers] = useState<Array<Answer>>();
+	const [body_, setBody] = useState(body);
 
 	async function loadAnswers() {
 		setAnswers(await getAnswersToQuestion(id));
@@ -32,7 +40,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ id, body, footer }) => {
 				boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
 			}}
 		>
-			<p>{body}</p>
+			<p>{body_}</p>
 			{footer && <small style={{ color: "#666" }}>{footer}</small>}
 			<div>
 				{answers?.length !== 0 && (
@@ -45,8 +53,13 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ id, body, footer }) => {
 						answer
 					</button>
 				)}
-			</div>
 
+				{getId() == userId && (
+					<button onClick={() => setShowEditQuestionForm((prev) => !prev)}>
+						edit
+					</button>
+				)}
+			</div>
 			{showAnswerForm && (
 				<>
 					<AnswerForm
@@ -60,15 +73,26 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ id, body, footer }) => {
 			)}
 			{showAnswer &&
 				answers?.map((a) => (
-					<>
+					<React.Fragment key={a.id}>
 						<AnswerCard
 							id={a.id}
 							userId={a.user.id}
 							body={a.body}
 							footer={`Answered by ${a.user.username} (${a.user.email})`}
 						/>
-					</>
+					</React.Fragment>
 				))}
+			{showEditQuestionForm && (
+				<>
+					<EditQuestionForm
+						id={id}
+						afterSubmit={(value: string) => {
+							setBody(value);
+							setShowEditQuestionForm(false);
+						}}
+					/>
+				</>
+			)}
 		</div>
 	);
 };
