@@ -41,6 +41,11 @@ builder.Services.AddCors(options =>
     );
 });
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5130);
+});
+
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AskRabbiDbContext>(opt =>
