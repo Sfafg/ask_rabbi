@@ -1,6 +1,6 @@
 ## Installation
 ```bash
-git clone https://github.com/your-username/ask_rabbi.git
+git clone https://github.com/Sfafg/ask_rabbi.git
 cd ask_rabbi
 ```
 
