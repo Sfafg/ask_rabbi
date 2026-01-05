@@ -30,7 +30,7 @@ export function searchQuestions(phrase: string, offset: number, limit: number) {
 }
 
 export function postQuestion(body: string) {
-	api.post(
+	return api.post(
 		"/questions",
 		{
 			"Content-Type": "application/json",

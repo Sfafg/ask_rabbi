@@ -17,6 +17,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ afterSubmit = null }) => {
 			await postQuestion(body);
 			if (afterSubmit) afterSubmit();
 			setBody("");
+			setError("");
 		} catch (err: any) {
 			setError(err.message);
 		}
