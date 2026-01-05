@@ -83,15 +83,13 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
 					</React.Fragment>
 				))}
 			{showEditQuestionForm && (
-				<>
-					<EditQuestionForm
-						id={id}
-						afterSubmit={(value: string) => {
-							setBody(value);
-							setShowEditQuestionForm(false);
-						}}
-					/>
-				</>
+				<EditQuestionForm
+					id={id}
+					afterSubmit={(value: string) => {
+						setBody(value);
+						setShowEditQuestionForm(false);
+					}}
+				/>
 			)}
 		</div>
 	);

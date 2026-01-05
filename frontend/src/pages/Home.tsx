@@ -37,15 +37,13 @@ function Home() {
 		<>
 			<SearchBar onSearch={searchPhrase} />
 			{questions?.map((q) => (
-				<>
-					<QuestionCard
-						key={q.id}
-						id={q.id}
-						userId={q.user.id}
-						body={q.body}
-						footer={`Asked by ${q.user.username} (${q.user.email})`}
-					/>
-				</>
+				<QuestionCard
+					key={q.id}
+					id={q.id}
+					userId={q.user.id}
+					body={q.body}
+					footer={`Asked by ${q.user.username} (${q.user.email})`}
+				/>
 			))}
 			<button onClick={loadMore}>load more</button>
 			{getRole() === "u" && <QuestionForm />}

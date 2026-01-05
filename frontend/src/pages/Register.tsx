@@ -5,11 +5,7 @@ interface RegisterProps {
 }
 
 function Register({ setRole }: RegisterProps) {
-	return (
-		<>
-			<RegisterForm setRole={setRole} />
-		</>
-	);
+	return <RegisterForm setRole={setRole} />;
 }
 
 export default Register;

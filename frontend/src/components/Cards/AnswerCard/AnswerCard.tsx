@@ -55,34 +55,28 @@ const AnswerCard: React.FC<AnswerCardProps> = ({
 				)}
 
 				{getId() == userId && (
-					<>
-						<button onClick={() => setShowEditAnswerForm((prev) => !prev)}>
-							edit answer
-						</button>
-					</>
+					<button onClick={() => setShowEditAnswerForm((prev) => !prev)}>
+						edit answer
+					</button>
 				)}
 			</div>
 			{showEditAnswerForm && (
-				<>
-					<EditAnswerForm
-						answerId={id}
-						afterSubmit={(body_) => {
-							setBody(body_);
-							setShowEditAnswerForm(false);
-						}}
-					/>
-				</>
+				<EditAnswerForm
+					answerId={id}
+					afterSubmit={(body_) => {
+						setBody(body_);
+						setShowEditAnswerForm(false);
+					}}
+				/>
 			)}
 			{showAnswerForm && (
-				<>
-					<AnswerForm
-						answerId={id}
-						afterSubmit={() => {
-							setShowAnswerForm(false);
-							loadAnswers();
-						}}
-					/>
-				</>
+				<AnswerForm
+					answerId={id}
+					afterSubmit={() => {
+						setShowAnswerForm(false);
+						loadAnswers();
+					}}
+				/>
 			)}
 			{showAnswer &&
 				answers?.map((a) => (

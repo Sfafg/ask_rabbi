@@ -6,11 +6,7 @@ interface LoginProps {
 }
 
 function Login({ setRole }: LoginProps) {
-	return (
-		<>
-			<LoginForm setRole={setRole} />
-		</>
-	);
+	return <LoginForm setRole={setRole} />;
 }
 
 export default Login;
