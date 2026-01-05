@@ -1,0 +1,54 @@
+services:
+  frontend:
+    image: node:20
+    working_dir: /frontend
+    container_name: ask_rabbi_fe
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/frontend
+    command: npm start -- --host 0.0.0.0
+    depends_on:
+      - backend
+    restart: always
+
+  backend:
+    image: mcr.microsoft.com/dotnet/sdk:9.0
+    working_dir: /backend
+    container_name: ask_rabbi_be
+    ports:
+      - "5130:5130" # Jeśli się zmienia to też trzeba zaktualizować w ./frontend/.env
+    volumes:
+      - ./backend:/backend
+    command: dotnet run --urls http://0.0.0.0:5130
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    image: postgres:18
+    container_name: ask_rabbi_db
+    environment:
+      POSTGRES_DB: ask_rabbi
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432" # Jeśli się zmienia to też trzeba zaktualizować w ./bacend/appsettings.Development.json
+    volumes:
+      - ./database/full_dump.sql:/docker-entrypoint-initdb.d/full_dump.sql
+    restart: always
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: ask_rabbi_admin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "177192@stud.prz.edu.pl"
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "8080:80"
+    volumes:
+      - ./database/servers.json:/pgadmin4/servers.json
+    depends_on:
+      - db
+    restart: always
