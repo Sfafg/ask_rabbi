@@ -7,7 +7,7 @@ services:
       - "3000:3000"
     volumes:
       - ./frontend:/frontend
-    command: npm start -- --host 0.0.0.0
+    command: sh -c "npm install && npm start -- --host 0.0.0.0"
     depends_on:
       - backend
     restart: always
@@ -20,7 +20,7 @@ services:
       - "5130:5130" # Jeśli się zmienia to też trzeba zaktualizować w ./frontend/.env
     volumes:
       - ./backend:/backend
-    command: dotnet run --urls http://0.0.0.0:5130
+    command: sh -c "dotnet restore && dotnet run --urls http://0.0.0.0:5130"
     depends_on:
       - db
     restart: always
