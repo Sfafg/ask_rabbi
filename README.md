@@ -8,15 +8,10 @@ On Arch Linux, it can be installed using:
 sudo pacman -S docker-compose
 ```
 
-## Installation
+## Installation and running
 ```bash
 git clone https://github.com/Sfafg/ask_rabbi.git
 cd ask_rabbi
-```
-
-## Running the application
-
-```bash
 docker-compose up -d
 ```
 the website should be working at
