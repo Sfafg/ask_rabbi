@@ -1,4 +1,4 @@
-import { Api } from "./api";
+import { Api, ValidationError } from "./api";
 import { jwt } from "./authService";
 
 const api = new Api();
@@ -24,6 +24,10 @@ export function getAnswersToAnswer(answerId: number) {
 }
 
 export function postAnswerToQuestion(questionid: number, body: string) {
+	if (body.length < 10) {
+		throw new ValidationError("Answer must be at least 10 characters");
+	}
+
 	return api.post(
 		`/answers`,
 		{
@@ -35,6 +39,10 @@ export function postAnswerToQuestion(questionid: number, body: string) {
 }
 
 export function postAnswerToAnswer(answerid: number, body: string) {
+	if (body.length < 10) {
+		throw new ValidationError("Answer must be at least 10 characters");
+	}
+
 	return api.post(
 		`/answers`,
 		{
@@ -46,6 +54,10 @@ export function postAnswerToAnswer(answerid: number, body: string) {
 }
 
 export function updateAnswer(answerid: number, body: string) {
+	if (body.length < 10) {
+		throw new ValidationError("Answer must be at least 10 characters");
+	}
+
 	return api.put(
 		`/answers/${answerid}`,
 		{

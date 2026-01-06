@@ -1,4 +1,4 @@
-import { Api } from "./api";
+import { Api, ValidationError } from "./api";
 import { jwt } from "./authService";
 
 const api = new Api();
@@ -30,6 +30,10 @@ export function searchQuestions(phrase: string, offset: number, limit: number) {
 }
 
 export function postQuestion(body: string) {
+	if (body.length < 3 || body.length > 1024) {
+		throw new ValidationError("Question must be between 3 and 1024 characters");
+	}
+
 	return api.post(
 		"/questions",
 		{
@@ -41,6 +45,10 @@ export function postQuestion(body: string) {
 }
 
 export function updateQuestion(questionid: number, body: string) {
+	if (body.length < 3 || body.length > 1024) {
+		throw new ValidationError("Question must be between 3 and 1024 characters");
+	}
+
 	return api.put(
 		`/questions/${questionid}`,
 		{
